@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - Delight Canteen</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #fceabb, #f8b500);
+            color: #333;
+        }
+        header {
+            background-color: #ff7f50;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            font-size: 35px;
+            font-weight: bold;
+        }
+        .checkout-container {
+            padding: 20px;
+        }
+        .payment-options {
+            margin-top: 30px;
+        }
+        .payment-option {
+            margin-bottom: 20px;
+        }
+        .payment-option label {
+            font-size: 20px;
+        }
+        .payment-summary {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .submit-button, .back-button {
+            margin-top: 20px;
+            background-color: #2980b9;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .submit-button {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Checkout - Delight Canteen
+</header>
+
+<div class="checkout-container">
+    <div class="payment-summary">
+        <div id="total-items-checkout">Total Items: 0</div>
+        <div id="total-price-checkout">Total Price: ₹0</div>
+    </div>
+
+    <div class="payment-options">
+        <div class="payment-option">
+            <input type="radio" id="upi" name="payment" value="UPI" onclick="selectPaymentMethod('UPI')">
+            <label for="upi">Pay using UPI</label>
+        </div>
+        <div class="payment-option">
+            <input type="radio" id="cod" name="payment" value="COD" onclick="selectPaymentMethod('COD')">
+            <label for="cod">Cash on Delivery</label>
+        </div>
+
+        <div id="upi-section" style="display: none;">
+            <label for="upi-id">Enter your UPI ID:</label>
+            <input type="text" id="upi-id" placeholder="example@upi" style="width: 100%; padding: 10px; margin-top: 10px;">
+        </div>
+    </div>
+
+    <a href="/cart" class="back-button">Back to Cart</a>
+    <a href="#" class="submit-button" id="submit-order" onclick="submitOrder()">Confirm Order</a>
+</div>
+
+<script>
+    // Retrieve cart items from localStorage
+    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+    // Variables for cart summary
+    let totalItems = 0;
+    let totalPrice = 0;
+
+    // Display selected items and calculate total price
+    const totalItemsCheckout = document.getElementById('total-items-checkout');
+    const totalPriceCheckout = document.getElementById('total-price-checkout');
+
+    cartItems.forEach(item => {
+        totalItems++;
+        totalPrice += parseInt(item.price);
+    });
+
+    totalItemsCheckout.innerText = Total Items: ${totalItems};
+    totalPriceCheckout.innerText = Total Price: ₹${totalPrice};
+
+    // Function to handle payment method selection
+    function selectPaymentMethod(method) {
+        if (method === 'UPI') {
+            document.getElementById('upi-section').style.display = 'block';  // Show UPI ID input
+        } else {
+            document.getElementById('upi-section').style.display = 'none';  // Hide UPI ID input
+        }
+    }
+
+    // Function to handle order confirmation
+    function submitOrder() {
+        const paymentMethod = document.querySelector('input[name="payment"]:checked');
+
+        if (!paymentMethod) {
+            alert("Please select a payment method.");
+            return;
+        }
+
+        const paymentMethodValue = paymentMethod.value;
+        if (paymentMethodValue === "UPI") {
+            const upiID = document.getElementById('upi-id').value;
+            if (!upiID) {
+                alert("Please enter your UPI ID.");
+                return;
+            }
+            alert(Your order is confirmed! Payment via UPI ID: ${upiID});
+        } else if (paymentMethodValue === "COD") {
+            alert("Your order is confirmed! Payment via Cash on Delivery.");
+        }
+
+        // Clear the cart after confirmation
+        localStorage.removeItem("cartItems");
+    }
+</script>
+
+</body>
+</html>
